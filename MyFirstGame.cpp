@@ -111,7 +111,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
             Direct3D::BeginDraw();
 
             //描画処理
-            XMMATRIX mat = XMMatrixRotationY(XMConvertToRadians(0));
+            XMMATRIX mat = XMMatrixRotationY(XMConvertToRadians(45));
             q->Draw(mat);
             //スワップ（バックバッファを表に表示する）
             Direct3D::EndDraw();
