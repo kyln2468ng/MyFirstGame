@@ -111,8 +111,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
             Direct3D::BeginDraw();
 
             //描画処理
-            XMMATRIX mat = XMMatrixRotationY(XMConvertToRadians(45));
-            q->Draw(mat);
+            static float angl = 10;
+            angl += 0.05f;
+            static float anZ = 10;
+            anZ += 0.05f;
+
+            XMMATRIX zr = XMMatrixRotationZ(XMConvertToRadians(45));
+            XMMATRIX mat = XMMatrixRotationY(XMConvertToRadians(angl));
+            XMMATRIX sum = zr * mat;
+
+            q->Draw(sum);
             //スワップ（バックバッファを表に表示する）
             Direct3D::EndDraw();
           //  pSwapChain->Present(0, 0);

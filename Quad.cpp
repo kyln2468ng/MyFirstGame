@@ -32,41 +32,41 @@ HRESULT Quad::Initialize()
 	// 縦横2の乗数
 	VERTEX vertices[] =
 	{
-		// 面1
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },   // 四角形の頂点（左上）
-		{ XMVectorSet(1.0f,  1.0f, 0.0f, 0.0f),	XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },   // 四角形の頂点（右上）
-		{ XMVectorSet(1.0f, -1.0f, 0.0f, 0.0f),	XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f) },   // 四角形の頂点（右下）
-		{ XMVectorSet(-1.0f, -1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) },   // 四角形の頂点（左下）
+		// 面1 正面
+		{ XMVectorSet(-1.0f,  1.0f, -1.0f, 1.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },   // 四角形の頂点（左上）
+		{ XMVectorSet(1.0f,  1.0f,-1.0f, 1.0f),	XMVectorSet(0.25f, 0.0f, 0.0f, 0.0f) },   // 四角形の頂点（右上）
+		{ XMVectorSet(1.0f, -1.0f, -1.0f, 1.0f),XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f) },   // 四角形の頂点（右下）
+		{ XMVectorSet(-1.0f, -1.0f, -1.0f, 1.0f),XMVectorSet(0.0f, 0.5f, 0.0f, 0.0f) },   // 四角形の頂点（左下）
 	
-		// 面2
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
+		// 面2 上面
+		{ XMVectorSet(-1.0f,  1.0f,  1.0f, 1.0f),XMVectorSet(0.25f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet( 1.0f,  1.0f,  1.0f, 1.0f),XMVectorSet(0.5f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet( 1.0f,  1.0f, -1.0f, 1.0f),XMVectorSet(0.5f, 0.5f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  1.0f,  -1.0f, 1.0f),XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f) },
 	
-		// 面3
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
+		// 面3 右面
+		{ XMVectorSet(1.0f,   1.0f, -1.0f, 1.0f),XMVectorSet(0.5f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,   1.0f,  1.0f, 1.0f),XMVectorSet(0.75f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,  -1.0f,  1.0f, 1.0f),XMVectorSet(0.75f, 0.5f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(0.5f, 0.5f, 0.0f, 0.0f) },
 	
-		// 面4
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
+		// 面4 下面
+		{ XMVectorSet(-1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(0.0f, 0.5f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,  -1.0f, 1.0f, 1.0f),XMVectorSet(0.25f, 1.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  -1.0f, 1.0f, 1.0f),XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) },
 
-		// 面5
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
+		// 面5 左面
+		{ XMVectorSet(-1.0f,  1.0f, 1.0f, 1.0f),XMVectorSet(0.75f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  1.0f, -1.0f, 1.0f),XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(1.0f, 0.5f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  -1.0f, 1.0f, 1.0f),XMVectorSet(0.75f, 0.5f, 0.0f, 0.0f) },
 	
-		// 面6
-		{ XMVectorSet(-1.0f,  1.0f, -1.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet( 1.0f,  1.0f, 1.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet( 1.0f,  -1.0f, 1.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  -1.0f, 1.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },
+		// 面6 裏面
+		{ XMVectorSet( 1.0f,  1.0f, 1.0f, 1.0f),XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  1.0f, 1.0f, 1.0f),XMVectorSet(0.5f, 0.5f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  -1.0f, 1.0f, 1.0f),XMVectorSet(0.5f, 1.0f, 0.0f, 0.0f) },
+		{ XMVectorSet( 1.0f,  -1.0f, 1.0f, 1.0f),XMVectorSet(0.250f, 1.0f, 0.0f, 0.0f) },
 
 	};
 
@@ -89,7 +89,13 @@ HRESULT Quad::Initialize()
 	}
 
 	//インデックス情報
-	int index[] = { 0,2,3, 0,1,2 }; // CW ※時計回り
+	int index[] = { 0,2,3, 0,1,2, 	// 正面
+					4,6,7, 4,5,6,	// 上面
+					8,10,11, 8,9,10,	// 右面
+					12,14,15, 12,13,14,	// 下面
+					16,18,19, 16,17,18,	// 左面
+					20,22,23, 20,21,22}; // 裏面 
+	// CW ※時計回り
 
 	// インデックスバッファを生成する
 	D3D11_BUFFER_DESC   bd;
@@ -176,7 +182,7 @@ void Quad::Draw(XMMATRIX& worldMatrix)
 
 
 
-	Direct3D::pContext->DrawIndexed(6, 0, 0);
+	Direct3D::pContext->DrawIndexed(36, 0, 0);
 }
 
 void Quad::Release()
