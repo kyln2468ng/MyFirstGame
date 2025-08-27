@@ -7,6 +7,7 @@
 #include "Quad.h"
 #include "Dice.h"
 #include "Sprite.h"
+#include "Transform.h"
 
 
 HWND hWnd = nullptr;
@@ -85,6 +86,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
         return 0;
     }
 
+    Transform* trans = new Transform();
+
     // メイン メッセージ ループ:
     // メッセージループは、アプリケーションがシステムからメッセージを受け取り、処理するための仕組み。
     // ユーザー操作（クリックやキー入力など）を受け取り、処理を続ける仕組み 
@@ -127,7 +130,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
             Direct3D::BeginDraw();
 
             //描画処理
-            static float angl = 10;
+          /*  static float angl = 10;
             angl += 0.05f;
             static float anZ = 10;
             anZ += 0.05f;
@@ -137,8 +140,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
             XMMATRIX sum = zr * mat;
 
             q->Draw(sum);
-            s->Draw(zr);
+            s->Draw(zr);*/
             //dice->Draw(sum);
+            
+            XMMATRIX zr = XMMatrixRotationZ(XMConvertToRadians(0));
+            //trans->position_.x = 2;
+            trans->rotate_.y = -15;
+            //trans->scale_.x = 2;
+            trans->Calculation();
+            XMMATRIX cd = trans->GetWorldMatrix();
+            q->Draw(cd);
+            s->Draw(zr);
             //スワップ（バックバッファを表に表示する）
             Direct3D::EndDraw();
           //  pSwapChain->Present(0, 0);
