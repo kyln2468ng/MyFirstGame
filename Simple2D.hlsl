@@ -23,13 +23,13 @@ struct VS_OUT
             // セマンティクス
     float4 pos : SV_POSITION; //位置
     float2 uv : TEXCOORD; //UV座標
-    float4 color : COLOR; //色（明るさ）
+    //float4 color : COLOR; //色（明るさ）
 };
 
 //───────────────────────────────────────
 // 頂点シェーダ
 //───────────────────────────────────────
-VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
+VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD)
 {
 	//ピクセルシェーダーへ渡す情報
     VS_OUT outData;
@@ -39,15 +39,16 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     outData.pos = mul(pos, matWVP);
     outData.uv = uv; // UV座標はそのまま
     
-    // 法線を回転
-    normal =normalize(mul(normal,matW));
-    normal.w = 0;
-   // normal = normalize(normal);
+   // 法線を回転
+   // normal = normalize(mul(normal, matW));
+   // normal.w = 0;
+   //// normal = normalize(normal);
    
-    float4 light = float4(-1, 0.5, -0.7, 0);
-    light = normalize(light);
-    outData.color = dot(normal, light);
+   // float4 light = float4(-1, 0.5, -0.7, 0);
+   // light = normalize(light);
+   // outData.color = dot(normal, light);
 
+   // outData.color = float4(1, 1, 1, 1);
 	//まとめて出力
     return outData;
 }
@@ -59,5 +60,5 @@ float4 PS(VS_OUT inData) : SV_Target
 {
     //float4 color = g_texture.Sample(g_sampler, inData.uv); // テクスチャーから色取る
     //return color;
-    return g_texture.Sample(g_sampler, inData.uv) * inData.color;
+    return g_texture.Sample(g_sampler, inData.uv); //* inData.color;
 }

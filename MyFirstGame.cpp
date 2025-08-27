@@ -5,6 +5,8 @@
 #include "MyFirstGame.h"
 #include "Direct3D.h"
 #include "Quad.h"
+#include "Dice.h"
+#include "Sprite.h"
 
 
 HWND hWnd = nullptr;
@@ -63,9 +65,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
     MSG msg{};
     Quad* q = new Quad();
     hr = q->Initialize();
+
+    
+  /*  Dice* dice = new Dice();
+    hr = dice->Initialize();*/
+    
     if (FAILED(hr))
     {
         MessageBox(nullptr, L"クアッドのイニシャライズに失敗しました", L"エラー", MB_OK);
+        return 0;
+    }
+
+    Sprite* s = new Sprite();
+    hr = s->Initialize();
+
+    if (FAILED(hr))
+    {
+        MessageBox(nullptr, L"スプライトのイニシャライズに失敗しました", L"エラー", MB_OK);
         return 0;
     }
 
@@ -116,11 +132,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
             static float anZ = 10;
             anZ += 0.05f;
 
-            XMMATRIX zr = XMMatrixRotationZ(XMConvertToRadians(45));
+            XMMATRIX zr = XMMatrixRotationZ(XMConvertToRadians(0));
             XMMATRIX mat = XMMatrixRotationY(XMConvertToRadians(angl));
             XMMATRIX sum = zr * mat;
 
             q->Draw(sum);
+            s->Draw(zr);
+            //dice->Draw(sum);
             //スワップ（バックバッファを表に表示する）
             Direct3D::EndDraw();
           //  pSwapChain->Present(0, 0);
@@ -129,6 +147,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
     }
     q->Release();
     SAFE_RELEASE(q);
+    s->Release();
+    SAFE_RELEASE(s);
+
+    /*dice->Release();
+    SAFE_RELEASE(dice);*/
 
     Direct3D::Release();
 

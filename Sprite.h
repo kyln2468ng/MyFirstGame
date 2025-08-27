@@ -2,38 +2,37 @@
 #include "Direct3D.h"
 
 #include <DirectXMath.h>
-#include "Camera.h"
+
 #include "Texture.h"
 
 using namespace DirectX;
 
 //コンスタントバッファー
 
-struct CONSTANT_BUFFER
+struct CONSTANT_BUFFER_2D
 {
 	XMMATRIX	matWVP;
-	XMMATRIX	matW;
-	XMMATRIX	matWorld; // ワールド行列
+	//XMMATRIX	matW;
+	//XMMATRIX	matWorld; // ワールド行列
 };
 
 //頂点情報
-struct VERTEX
+struct VERTEX_2D
 {
 	XMVECTOR position;
 	XMVECTOR uv;
-	XMVECTOR normal;
 };
 
 // 前方宣言
 class Texture; // Textureクラスってのがどこかにあってだなぁっていう宣言
 
-class Quad
+class Sprite
 {
 public:
-	Quad();
-	virtual ~Quad();
-	virtual HRESULT Initialize();
-	virtual void Draw(XMMATRIX& worldMatrix);
+	Sprite();
+	 ~Sprite();
+	 HRESULT Initialize();
+	 void Draw(XMMATRIX& worldMatrix);
 	void Release();
 protected:
 	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ

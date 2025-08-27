@@ -33,40 +33,40 @@ HRESULT Quad::Initialize()
 	VERTEX vertices[] =
 	{
 		// 面1 正面
-		{ XMVectorSet(-1.0f,  1.0f, -1.0f, 1.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },   // 四角形の頂点（左上）
-		{ XMVectorSet(1.0f,  1.0f,-1.0f, 1.0f),	XMVectorSet(0.25f, 0.0f, 0.0f, 0.0f) },   // 四角形の頂点（右上）
-		{ XMVectorSet(1.0f, -1.0f, -1.0f, 1.0f),XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f) },   // 四角形の頂点（右下）
-		{ XMVectorSet(-1.0f, -1.0f, -1.0f, 1.0f),XMVectorSet(0.0f, 0.5f, 0.0f, 0.0f) },   // 四角形の頂点（左下）
-	
-		// 面2 上面
-		{ XMVectorSet(-1.0f,  1.0f,  1.0f, 1.0f),XMVectorSet(0.25f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet( 1.0f,  1.0f,  1.0f, 1.0f),XMVectorSet(0.5f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet( 1.0f,  1.0f, -1.0f, 1.0f),XMVectorSet(0.5f, 0.5f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f,  -1.0f, 1.0f),XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  1.0f, -1.0f, 1.0f), XMVectorSet(0.0f,  0.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f) },   // 四角形の頂点（左上）
+		{ XMVectorSet( 1.0f,  1.0f, -1.0f, 1.0f), XMVectorSet(0.25f, 0.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f) },   // 四角形の頂点（右上）
+		{ XMVectorSet( 1.0f, -1.0f, -1.0f, 1.0f), XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f) },   // 四角形の頂点（右下）
+		{ XMVectorSet(-1.0f, -1.0f, -1.0f, 1.0f), XMVectorSet(0.0f,  0.5f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f) },   // 四角形の頂点（左下）
+																					 
+		// 面2 上面																  ,
+		{ XMVectorSet(-1.0f,  1.0f,  1.0f, 1.0f),XMVectorSet(0.25f, 0.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,  1.0f,  1.0f, 1.0f), XMVectorSet(0.5f,  0.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,  1.0f, -1.0f, 1.0f), XMVectorSet(0.5f,  0.5f, 0.0f, 0.0f),XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  1.0f, -1.0f, 1.0f),XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f),XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) },
 	
 		// 面3 右面
-		{ XMVectorSet(1.0f,   1.0f, -1.0f, 1.0f),XMVectorSet(0.5f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(1.0f,   1.0f,  1.0f, 1.0f),XMVectorSet(0.75f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(1.0f,  -1.0f,  1.0f, 1.0f),XMVectorSet(0.75f, 0.5f, 0.0f, 0.0f) },
-		{ XMVectorSet(1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(0.5f, 0.5f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,   1.0f, -1.0f, 1.0f),XMVectorSet(0.5f,  0.0f, 0.0f, 0.0f),XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,   1.0f,  1.0f, 1.0f),XMVectorSet(0.75f, 0.0f, 0.0f, 0.0f),XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,  -1.0f,  1.0f, 1.0f),XMVectorSet(0.75f, 0.5f, 0.0f, 0.0f),XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(0.5f,  0.5f, 0.0f, 0.0f),XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },
 	
 		// 面4 下面
-		{ XMVectorSet(-1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(0.0f, 0.5f, 0.0f, 0.0f) },
-		{ XMVectorSet(1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f) },
-		{ XMVectorSet(1.0f,  -1.0f, 1.0f, 1.0f),XMVectorSet(0.25f, 1.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  -1.0f, 1.0f, 1.0f),XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(0.0f,  0.5f, 0.0f, 0.0f),XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,  -1.0f, -1.0f, 1.0f), XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f),XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(1.0f,  -1.0f,  1.0f, 1.0f), XMVectorSet(0.25f, 1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  -1.0f,  1.0f, 1.0f),XMVectorSet(0.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f) },
 
 		// 面5 左面
-		{ XMVectorSet(-1.0f,  1.0f, 1.0f, 1.0f),XMVectorSet(0.75f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, -1.0f, 1.0f),XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(1.0f, 0.5f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  -1.0f, 1.0f, 1.0f),XMVectorSet(0.75f, 0.5f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,   1.0f,  1.0f, 1.0f),XMVectorSet(0.75f, 0.0f, 0.0f, 0.0f),XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,   1.0f, -1.0f, 1.0f),XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  -1.0f, -1.0f, 1.0f),XMVectorSet(1.0f, 0.5f, 0.0f, 0.0f), XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  -1.0f,  1.0f, 1.0f),XMVectorSet(0.75f, 0.5f, 0.0f, 0.0f),XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f) },
 	
 		// 面6 裏面
-		{ XMVectorSet( 1.0f,  1.0f, 1.0f, 1.0f),XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  1.0f, 1.0f, 1.0f),XMVectorSet(0.5f, 0.5f, 0.0f, 0.0f) },
-		{ XMVectorSet(-1.0f,  -1.0f, 1.0f, 1.0f),XMVectorSet(0.5f, 1.0f, 0.0f, 0.0f) },
-		{ XMVectorSet( 1.0f,  -1.0f, 1.0f, 1.0f),XMVectorSet(0.250f, 1.0f, 0.0f, 0.0f) },
+		{ XMVectorSet( 1.0f,  1.0f,  1.0f, 1.0f), XMVectorSet(0.25f, 0.5f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  1.0f,  1.0f, 1.0f), XMVectorSet(0.5f,  0.5f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f) },
+		{ XMVectorSet(-1.0f,  -1.0f, 1.0f, 1.0f), XMVectorSet(0.5f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f) },
+		{ XMVectorSet( 1.0f,  -1.0f, 1.0f, 1.0f), XMVectorSet(0.25f, 1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f) }, 
 
 	};
 
@@ -148,9 +148,12 @@ void Quad::Draw(XMMATRIX& worldMatrix)
 	//XMVECTOR target = { 0, 0, 0, 0 };	//カメラの焦点
 	//XMMATRIX view = XMMatrixLookAtLH(position, target, XMVectorSet(0, 1, 0, 0));	//ビュー行列
 	//XMMATRIX proj = XMMatrixPerspectiveFovLH(XM_PIDIV4, 800.0f / 600.0f, 0.1f, 100.0f);//射影行列
+	Direct3D::SetShader(SHADER_3D); // シェーダーの設定
 
 	CONSTANT_BUFFER cb;
 	cb.matWVP = XMMatrixTranspose(worldMatrix * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
+	cb.matW = XMMatrixInverse(nullptr, worldMatrix);
+	cb.matWorld = XMMatrixTranspose(worldMatrix);
 
 	D3D11_MAPPED_SUBRESOURCE pdata;
 	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
