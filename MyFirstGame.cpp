@@ -8,9 +8,10 @@
 #include "Dice.h"
 #include "Sprite.h"
 #include "Transform.h"
+#include "Fbx.h"
+#include "Input.h"
 
-
-HWND hWnd = nullptr;
+HWND hWnd = nullptr; // ウィンドウハンドル…ウィンドウを識別するための番号　車のナンバーみたいなもん　IDとかそこらへん
 
 #define MAX_LOADSTRING 100
 
@@ -59,21 +60,32 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
         return 0;
     }
 
+    //DirectInputの初期化
+    Input::Initialize(hWnd);
+
     Camera::Initialize();
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MYFIRSTGAME));
 
     MSG msg{};
-    Quad* q = new Quad();
-    hr = q->Initialize();
+  //  Quad* q = new Quad();
+  //  hr = q->Initialize();
 
-    
-  /*  Dice* dice = new Dice();
-    hr = dice->Initialize();*/
-    
+  ///*  Dice* dice = new Dice();
+  //  hr = dice->Initialize();*/
+  //  
+  //  if (FAILED(hr))
+  //  {
+  //      MessageBox(nullptr, L"クアッドのイニシャライズに失敗しました", L"エラー", MB_OK);
+  //      return 0;
+  //  }
+
+    Fbx* fb = new Fbx();
+    hr = fb->Load("OdenA.fbx");
+
     if (FAILED(hr))
     {
-        MessageBox(nullptr, L"クアッドのイニシャライズに失敗しました", L"エラー", MB_OK);
+        MessageBox(nullptr, L"fbxのロードに失敗しました", L"エラー", MB_OK);
         return 0;
     }
 
@@ -94,6 +106,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
 //    while (GetMessage(&msg, nullptr, 0, 0))
     while (msg.message != WM_QUIT)
     {
+       
+        
+
        /* if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
@@ -122,8 +137,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
             //ゲームの処理
             Camera::Update();
 
+            //入力情報の更新
+            Input::Update();
             //背景の色
             //float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
+
+            if (Input::IsKeyDown(DIK_ESCAPE) || Input::IsMouseButtonDown(0))
+            {
+                static int cnt = 0;
+                cnt++;
+                if (cnt >= 3)
+                {
+                    PostQuitMessage(0);
+                }
+            }
 
             //画面をクリア
            // pContext->ClearRenderTargetView(pRenderTargetView, clearColor);
@@ -143,28 +170,42 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
             s->Draw(zr);*/
             //dice->Draw(sum);
             
-            XMMATRIX zr = XMMatrixRotationZ(XMConvertToRadians(0));
-            //trans->position_.x = 2;
+            //XMMATRIX zr = XMMatrixRotationZ(XMConvertToRadians(0));
+            /*trans->position_.x = 2;
             trans->rotate_.y = -15;
-            //trans->scale_.x = 2;
+            trans->scale_.x = 2;
             trans->Calculation();
-            XMMATRIX cd = trans->GetWorldMatrix();
-            q->Draw(cd);
-            s->Draw(zr);
+            XMMATRIX cd = trans->GetWorldMatrix();*/
+            //q->Draw(cd);
+            //s->Draw(zr);
+            static Transform trans;
+           // trans.position_.x = 1.0f;
+            trans.position_.y = -1.0;
+            trans.rotate_.y += 0.1f;
+            trans.Calculation();
+
+
+            fb->Draw(trans);
+
             //スワップ（バックバッファを表に表示する）
             Direct3D::EndDraw();
           //  pSwapChain->Present(0, 0);
 
+           
+
         }
     }
-    q->Release();
+  /*  q->Release();
     SAFE_RELEASE(q);
     s->Release();
-    SAFE_RELEASE(s);
+    SAFE_RELEASE(s);*/
 
     /*dice->Release();
     SAFE_RELEASE(dice);*/
-
+    
+    fb->Release();
+    //FBX_SAFE_DELETE(fb);
+    Input::Release();
     Direct3D::Release();
 
     return (int) msg.wParam;
@@ -220,7 +261,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    int winH = winRect.bottom - winRect.top;     //ウィンドウ高さ
 
    hWnd = CreateWindowW(szWindowClass, WIN_CLASS_NAME, WS_OVERLAPPEDWINDOW,
-       CW_USEDEFAULT, 0, winW, winH, nullptr, nullptr, hInstance, nullptr);
+       CW_USEDEFAULT, 0, winW, winH, nullptr, nullptr, hInstance, nullptr); // ウィンドウ作る　OSが勝手に番号つける　消すときこの番号必要になるから残しとく必要がある
    //HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
    // 800,600, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
    //画像サイズ変えた
@@ -274,6 +315,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //コールバック関数は、特定のイベントが発生した際にシステムから呼び出される関数。ウィンドウに届いたメッセージ（通知）を処理する関数 
+//通知の内容として、具体的にいうとマウス動いたぞーとか今起きたぞーっていう通知、ウィンドウ作ったとかも含め何かしらあったらそれを送るのがウィンドウプロシージャー
 {
     switch (message)
     {
@@ -305,6 +347,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+    case WM_MOUSEMOVE:
+    {
+        //Input::SetMousePosition(LOWORD(lParam), HIWORD(lParam));
+        int x = LOWORD(lParam);
+        int y = HIWORD(lParam);
+        Input::SetMousePosition(x, y);
+        OutputDebugStringA((std::to_string(x) + "," + std::to_string(y) + "\n").c_str());
+        //return 0;
+    }
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

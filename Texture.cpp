@@ -1,4 +1,3 @@
-#include <wincodec.h>
 #include "Texture.h"
 #include "Direct3D.h"
 #include <DirectXTex.h>
@@ -6,12 +5,14 @@
 // DirectXTex‚Ìƒ‰ƒCƒuƒ‰ƒŠ‚ðƒŠƒ“ƒN
 
 #pragma comment(lib, "DirectXTex.lib")
+
 using namespace DirectX;
 
 Texture::Texture()
-	:pSampler_(nullptr),
-	pSRV_(nullptr)
+	/*:pSampler_(nullptr),
+	pSRV_(nullptr)*/
 {
+
 }
 
 Texture::~Texture()
@@ -34,7 +35,7 @@ HRESULT Texture::Load(std::string fileName)
 	{
 		return S_FALSE;
 	}
-	D3D11_SAMPLER_DESC  SamDesc{};
+	D3D11_SAMPLER_DESC  SamDesc;
 	ZeroMemory(&SamDesc, sizeof(D3D11_SAMPLER_DESC));
 	SamDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	SamDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -51,6 +52,10 @@ HRESULT Texture::Load(std::string fileName)
 	srv.Texture2D.MipLevels = 1;
 	hr = CreateShaderResourceView(Direct3D::pDevice,
 		image.GetImages(), image.GetImageCount(), metadata, &pSRV_);
+	if (FAILED(hr))
+	{
+		return S_FALSE;
+	}
 	return S_OK;
 }
 
