@@ -2,14 +2,13 @@
 //
 
 #include "framework.h"
-#include "MyFirstGame.h"
-#include "Direct3D.h"
-#include "Quad.h"
-#include "Dice.h"
-#include "Sprite.h"
-#include "Transform.h"
-#include "Fbx.h"
-#include "Input.h"
+#include "Main.h"
+#include "Engine\\Direct3D.h"
+#include "Engine\\Quad.h"
+#include "Engine\\Sprite.h"
+#include "Engine\\Transform.h"
+#include "Engine\\Fbx.h"
+#include "Engine\\Input.h"
 
 HWND hWnd = nullptr; // ウィンドウハンドル…ウィンドウを識別するための番号　車のナンバーみたいなもん　IDとかそこらへん
 

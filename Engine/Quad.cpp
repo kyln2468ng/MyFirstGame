@@ -1,6 +1,6 @@
 #include "Quad.h"
 #include "Texture.h"
-#include "Dice.h"
+
 
 Quad::Quad()
 	:pVertexBuffer_(nullptr),
