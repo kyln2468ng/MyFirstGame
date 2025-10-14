@@ -14,6 +14,15 @@ GameObject::~GameObject()
 {
 }
 
+void GameObject::UpdateSub()
+{
+	Update();
+	for (auto child : childList_)
+	{
+		child->UpdateSub();
+	}
+}
+
 void GameObject::DrawSub()
 {
 	//0.Ž©•ª‚ð•`‰æ
@@ -29,3 +38,9 @@ void GameObject::DrawSub()
 		child->DrawSub();
 	}
 }
+
+//void GameObject::ReleaseSub()
+//{
+//	Release();
+//
+//}

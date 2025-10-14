@@ -5,7 +5,8 @@
 #pragma once
 
 #include "targetver.h"
-#define WIN32_LEAN_AND_MEAN             // Windows ヘッダーからほとんど使用されていない部分を除外する
+//#define WIN32_LEAN_AND_MEAN             // Windows ヘッダーからほとんど使用されていない部分を除外する
+//#include <cstdlib>
 // Windows ヘッダー ファイル
 #include <windows.h>
 // C ランタイム ヘッダー ファイル
@@ -13,3 +14,5 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+
+#pragma comment(lib, "winmm.lib")

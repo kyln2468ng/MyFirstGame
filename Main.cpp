@@ -97,13 +97,40 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
         //メッセージなし
         else
         {
+            timeBeginPeriod(1);
+            static DWORD countFps = 0; // FPS計測用カウンタ
+
+            static DWORD startTime = timeGetTime(); // 初回の時間を保存
+            DWORD nowTime = timeGetTime(); // 現在の時間を取得
+            
+            static DWORD lastUpdateTime = nowTime;
+            timeEndPeriod(1);
+
+            if (nowTime - startTime >= 1000)
+            {
+                string str = "FPS:" + std::to_string(nowTime - startTime) + ", " + std::to_string(countFps);
+                SetWindowTextA(hWnd, str.c_str());
+
+                countFps = 0;
+                startTime = nowTime;
+            }
+
+            if (nowTime - lastUpdateTime <= 1000.0f / 60)
+            {
+                continue;
+            }
+            lastUpdateTime = nowTime;
+
+            countFps++;
+            //startTime = nowTime;
+
             //ゲームの処理
             Camera::Update();
 
             //入力情報の更新
             Input::Update();
 
-            pRootJob->Update();
+            pRootJob->UpdateSub();
 
             //背景の色
             //float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
