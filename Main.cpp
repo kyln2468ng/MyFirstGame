@@ -3,12 +3,11 @@
 
 #include "framework.h"
 #include "Main.h"
-#include "Engine\\Direct3D.h"
-#include "Engine\\Quad.h"
-#include "Engine\\Sprite.h"
-#include "Engine\\Transform.h"
-#include "Engine\\Fbx.h"
-#include "Engine\\Input.h"
+#include "Engine/Direct3D.h"
+#include "Engine/Camera.h"
+#include "Engine/Transform.h"
+#include "Engine/Input.h"
+#include "Engine/RootJob.h"
 
 HWND hWnd = nullptr; // ウィンドウハンドル…ウィンドウを識別するための番号　車のナンバーみたいなもん　IDとかそこらへん
 
@@ -18,6 +17,8 @@ HWND hWnd = nullptr; // ウィンドウハンドル…ウィンドウを識別�
 const wchar_t* WIN_CLASS_NAME = L"SANPLE GAME WINDOW";
 const int WINDOW_WIDTH = 800;  //ウィンドウの幅
 const int WINDOW_HEIGHT = 600; //ウィンドウの高さ // SVGAサイズ
+
+RootJob* pRootJob = nullptr; //隠せなくもないけどグローバル変数で作る
 
 // グローバル変数:
 HINSTANCE hInst;                                // 現在のインターフェイス
@@ -60,44 +61,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
     }
 
     //DirectInputの初期化
-    Input::Initialize(hWnd);
+    Input::Initialize(hWnd); // 入力の初期化処理
 
-    Camera::Initialize();
+    Camera::Initialize(); // カメラの初期化処理
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MYFIRSTGAME));
 
     MSG msg{};
-  //  Quad* q = new Quad();
-  //  hr = q->Initialize();
 
-  ///*  Dice* dice = new Dice();
-  //  hr = dice->Initialize();*/
-  //  
-  //  if (FAILED(hr))
-  //  {
-  //      MessageBox(nullptr, L"クアッドのイニシャライズに失敗しました", L"エラー", MB_OK);
-  //      return 0;
-  //  }
-
-    Fbx* fb = new Fbx();
-    hr = fb->Load("OdenA.fbx");
-
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr, L"fbxのロードに失敗しました", L"エラー", MB_OK);
-        return 0;
-    }
-
-    Sprite* s = new Sprite();
-    hr = s->Initialize();
-
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr, L"スプライトのイニシャライズに失敗しました", L"エラー", MB_OK);
-        return 0;
-    }
-
-    Transform* trans = new Transform();
+    pRootJob = new RootJob(nullptr);
+    pRootJob->Initialize();
 
     // メイン メッセージ ループ:
     // メッセージループは、アプリケーションがシステムからメッセージを受け取り、処理するための仕組み。
@@ -105,9 +78,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
 //    while (GetMessage(&msg, nullptr, 0, 0))
     while (msg.message != WM_QUIT)
     {
-       
-        
-
        /* if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
@@ -117,27 +87,24 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
         //メッセージあり
 
         if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
-
         {
 
             TranslateMessage(&msg);
-
             DispatchMessage(&msg);
 
         }
 
-
-
         //メッセージなし
-
         else
         {
-
             //ゲームの処理
             Camera::Update();
 
             //入力情報の更新
             Input::Update();
+
+            pRootJob->Update();
+
             //背景の色
             //float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
 
@@ -152,58 +119,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
             }
 
             //画面をクリア
-           // pContext->ClearRenderTargetView(pRenderTargetView, clearColor);
             Direct3D::BeginDraw();
 
-            //描画処理
-          /*  static float angl = 10;
-            angl += 0.05f;
-            static float anZ = 10;
-            anZ += 0.05f;
-
-            XMMATRIX zr = XMMatrixRotationZ(XMConvertToRadians(0));
-            XMMATRIX mat = XMMatrixRotationY(XMConvertToRadians(angl));
-            XMMATRIX sum = zr * mat;
-
-            q->Draw(sum);
-            s->Draw(zr);*/
-            //dice->Draw(sum);
-            
-            //XMMATRIX zr = XMMatrixRotationZ(XMConvertToRadians(0));
-            /*trans->position_.x = 2;
-            trans->rotate_.y = -15;
-            trans->scale_.x = 2;
-            trans->Calculation();
-            XMMATRIX cd = trans->GetWorldMatrix();*/
-            //q->Draw(cd);
-            //s->Draw(zr);
-            static Transform trans;
-           // trans.position_.x = 1.0f;
-            trans.position_.y = -1.0;
-            trans.rotate_.y += 0.1f;
-            trans.Calculation();
-
-
-            fb->Draw(trans);
+            //pRootJobから、全てのオブジェクトの描画をする
+            pRootJob->DrawSub();
 
             //スワップ（バックバッファを表に表示する）
-            Direct3D::EndDraw();
-          //  pSwapChain->Present(0, 0);
-
-           
-
+            Direct3D::EndDraw();        
         }
     }
-  /*  q->Release();
-    SAFE_RELEASE(q);
-    s->Release();
-    SAFE_RELEASE(s);*/
-
-    /*dice->Release();
-    SAFE_RELEASE(dice);*/
-    
-    fb->Release();
-    //FBX_SAFE_DELETE(fb);
+    pRootJob->Release();
     Input::Release();
     Direct3D::Release();
 
