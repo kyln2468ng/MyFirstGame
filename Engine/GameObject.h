@@ -21,16 +21,23 @@ public:
 	void UpdateSub();
 	void DrawSub();
 	void ReleaseSub();
-	template<class T> void Instantiate(GameObject* parent)
+
+	void SetPosition(XMFLOAT3 position);
+	void SetPosition(float x, float y, float z);
+
+	//void KillMe() { isAlive_ = true; }
+	template<class T>  GameObject*Instantiate(GameObject* parent)
 	{
 		T* obj = new T(parent);
 		obj->Initialize();
 		childList_.push_back(obj);
+		return(obj);
 	}
 protected:
 	list<GameObject *> childList_;
 	Transform transform_;
 	GameObject* pParent_;
 	string	objectName_;
+	//bool isAlive_;
 };
 

@@ -9,6 +9,8 @@
 #include "Engine/Input.h"
 #include "Engine/RootJob.h"
 
+#pragma comment(lib, "winmm.lib")
+
 HWND hWnd = nullptr; // ウィンドウハンドル…ウィンドウを識別するための番号　車のナンバーみたいなもん　IDとかそこらへん
 
 #define MAX_LOADSTRING 100
@@ -155,7 +157,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
             Direct3D::EndDraw();        
         }
     }
-    pRootJob->Release();
+    pRootJob->ReleaseSub();
     Input::Release();
     Direct3D::Release();
 
@@ -307,6 +309,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         OutputDebugStringA((std::to_string(x) + "," + std::to_string(y) + "\n").c_str());
         //return 0;
     }
+        break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

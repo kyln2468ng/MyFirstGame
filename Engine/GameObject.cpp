@@ -8,6 +8,10 @@ GameObject::GameObject()
 GameObject::GameObject(GameObject* parent, const string& name)
 	:pParent_(parent), objectName_(name)
 {
+	if (parent != nullptr)
+	{
+		transform_.pParent_ = &(parent->transform_);
+	}
 }
 
 GameObject::~GameObject()
@@ -39,8 +43,21 @@ void GameObject::DrawSub()
 	}
 }
 
-//void GameObject::ReleaseSub()
-//{
-//	Release();
-//
-//}
+void GameObject::ReleaseSub()
+{
+	this->Release(); // Ž©•ª‚ÌŠJ•ú
+	for (auto child : childList_)
+	{
+		child->ReleaseSub();
+	}
+}
+
+void GameObject::SetPosition(XMFLOAT3 position)
+{
+	transform_.position_ = position;
+}
+
+void GameObject::SetPosition(float x, float y, float z)
+{
+	SetPosition(XMFLOAT3(x, y, z));
+}
