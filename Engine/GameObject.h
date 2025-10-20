@@ -25,7 +25,7 @@ public:
 	void SetPosition(XMFLOAT3 position);
 	void SetPosition(float x, float y, float z);
 
-	//void KillMe() { isAlive_ = true; }
+	void KillMe();
 	template<class T>  GameObject*Instantiate(GameObject* parent)
 	{
 		T* obj = new T(parent);
@@ -38,6 +38,7 @@ protected:
 	Transform transform_;
 	GameObject* pParent_;
 	string	objectName_;
-	//bool isAlive_;
+private:
+	bool isDead_;
 };
 
