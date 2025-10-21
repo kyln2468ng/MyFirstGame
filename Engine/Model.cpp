@@ -1,4 +1,5 @@
 #include "Model.h"
+#include "Direct3D.h"
 
 namespace Model
 {
@@ -41,4 +42,23 @@ void Model::Draw(int hModel)
 
 void Model::Release()
 {
+    bool isRefferd = false; //éQè∆Ç≥ÇÍÇƒÇ¢ÇÈÇ©
+    for (int i = 0;i < modelList.size();i++)
+    {
+        isRefferd = false;
+        for (int j = i + 1;j < modelList.size();j++)
+        {
+            if (modelList[i]->pfbx_ == modelList[j]->pfbx_)
+            {
+                isRefferd = true;
+                break;
+            }
+        }
+        if (isRefferd == false)
+        {
+            SAFE_DELETE(modelList[i]->pfbx_);
+        }
+        SAFE_DELETE(modelList[i]);
+    }
+    modelList.clear();
 }

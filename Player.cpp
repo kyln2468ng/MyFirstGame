@@ -1,11 +1,11 @@
 #include "Player.h"
 #include "Engine/Fbx.h"
 #include "ChildOden.h"
+#include "Engine/Model.h"
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), pFbx_(nullptr)
+	:GameObject(parent, "Player"), pFbx_(nullptr),hModel_(-1)
 {
-
 }
 
 Player::~Player()
@@ -14,12 +14,15 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	pFbx_ = new Fbx;
+	//pFbx_ = new Fbx;
 	//pFbx_がnullptrじゃなかった時のチェックあったほういい
-	pFbx_->Load("OdenA.fbx");
+	//pFbx_->Load("OdenA.fbx");
+	hModel_ = Model::Load("OdenA.fbx");
+	assert(hModel_ >= 0);
 	transform_.scale_.x = 0.7f;
 	transform_.scale_.y = 0.7f;
 	transform_.scale_.z = 0.7f;
+
 	//子オブジェクトにChildOdenを追加する
 	pRChildOden = (ChildOden*)Instantiate<ChildOden>(this);
 	pLChildOden = (ChildOden*)Instantiate<ChildOden>(this);
@@ -38,10 +41,12 @@ void Player::Update()
 
 void Player::Draw()
 {
-	if (pFbx_)
+	/*if (pFbx_)
 	{
 		pFbx_->Draw(transform_);
-	}
+	}*/
+	Model::SetTransform(hModel_, transform_);
+	Model::Draw(hModel_);
 }
 
 void Player::Release()

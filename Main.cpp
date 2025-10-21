@@ -8,7 +8,8 @@
 #include "Engine/Transform.h"
 #include "Engine/Input.h"
 #include "Engine/RootJob.h"
-
+#include "Engine/Model.h"
+ 
 #pragma comment(lib, "winmm.lib")
 
 HWND hWnd = nullptr; // ウィンドウハンドル…ウィンドウを識別するための番号　車のナンバーみたいなもん　IDとかそこらへん
@@ -157,6 +158,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
             Direct3D::EndDraw();        
         }
     }
+
+    Model::Release();
     pRootJob->ReleaseSub();
     Input::Release();
     Direct3D::Release();

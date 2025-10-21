@@ -18,5 +18,6 @@ private:
 	Fbx* pFbx_;
 	ChildOden* pRChildOden;
 	ChildOden* pLChildOden;
+	int hModel_;
 };
 
