@@ -20,7 +20,8 @@ GameObject::~GameObject()
 
 void GameObject::UpdateSub()
 {
-	Update();
+	transform_.Calculation();
+	this->Update();
 	for (auto child : childList_)
 	{
 		child->UpdateSub();
