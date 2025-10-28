@@ -26,7 +26,12 @@ public:
 	void SetPosition(float x, float y, float z);
 
 	void KillMe();
-	template<class T>  GameObject*Instantiate(GameObject* parent)
+
+	GameObject* GetRootJob();
+	GameObject* FindChildObject(const string& name);
+	GameObject* FindObject(const string& name);
+
+	template<class T> GameObject*Instantiate(GameObject* parent)
 	{
 		T* obj = new T(parent);
 		obj->Initialize();
