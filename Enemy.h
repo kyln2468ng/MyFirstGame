@@ -3,19 +3,18 @@
 
 class Fbx;
 
-class TestScene :
-    public GameObject
+class Enemy : public GameObject
 {
 public:
-	TestScene(GameObject* parent);
-	~TestScene();
+	Enemy(GameObject* parent);
+	~Enemy();
 
 	void Initialize() override;
 	void Update() override;
 	void Draw() override;
 	void Release() override;
+
 private:
 	Fbx* pFbx_;
 	int hModel_;
 };
-
