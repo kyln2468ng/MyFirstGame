@@ -25,7 +25,7 @@ void GameObject::UpdateSub()
 	transform_.Calculation();
 	this->Update();
 
-	//RoundRobin(GetRootJob());
+	RoundRobin(GetRootJob());
 
 	for (auto child : childList_)
 	{
@@ -141,15 +141,17 @@ void GameObject::Collision(GameObject* pTarget)
 
 	// 2つのコライダーの距離計算をする
 	XMFLOAT3 thisP = this->transform_.position_;
-	XMFLOAT3 tgtP = this->transform_.position_;
+	XMFLOAT3 tgtP = pTarget->transform_.position_;
 	float dist = (thisP.x - tgtP.x) * (thisP.x - tgtP.x) +
 				 (thisP.y - tgtP.y) * (thisP.y - tgtP.y) +
 				 (thisP.z - tgtP.z) * (thisP.z - tgtP.z);
 	// コライダー同士が交差していたら
 	if (dist <= thre)
 	{
+		int a = 0;
+		a++;
 		// なんかする
-		MessageBoxA(0, "ぶつかった", "Collider", MB_OK);
+		//MessageBoxA(0, "ぶつかった", "Collider", MB_OK);
 	}
 }
 
@@ -160,7 +162,7 @@ void GameObject::RoundRobin(GameObject* pTarget)
 		return;
 
 	// ②自分とターゲット自体のコライダーの当たり判定
-	if (pTarget->pCollider_ != nullptr)
+	if (pTarget->pCollider_ != nullptr && this->pCollider_ != pTarget->pCollider_)
 		Collision(pTarget);
 
 	// ③再帰的なやつでターゲットの子オブジェクトの当たり判定してく

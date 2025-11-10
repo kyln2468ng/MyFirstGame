@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "Engine/Model.h"
 #include "Engine/Fbx.h"
+#include "Engine/SphereCollider.h"
 
 Enemy::Enemy(GameObject* parent)
 	:GameObject(parent,"Enemy"),pFbx_(nullptr),hModel_(-1)
@@ -18,12 +19,15 @@ void Enemy::Initialize()
 	transform_.scale_.x = 0.7f;
 	transform_.scale_.y = 0.7f;
 	transform_.scale_.z = 0.7f;
-	transform_.position_.x = 5.0f;
+	transform_.position_ = { 0.0f, 0.0f, 50.0f };
+
+	SphereCollider* col = new SphereCollider(0.5f);
+	AddCollider(col);
 }
 
 void Enemy::Update()
 {
-	//transform_.position_.x -= 0.5f;
+	
 }
 
 void Enemy::Draw()
