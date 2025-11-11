@@ -35,6 +35,7 @@ public:
 
 	void AddCollider(SphereCollider* pCollider);
 	void Collision(GameObject* pTarget);
+	virtual void OnCollision(GameObject* pTarget) {};
 	void RoundRobin(GameObject* pTarget);
 
 	template<class T> GameObject*Instantiate(GameObject* parent)

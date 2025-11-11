@@ -1,8 +1,8 @@
 #pragma once
 #include "Engine/GameObject.h"
 
-class Fbx;
 class ChildOden;
+class Bullet;
 
 class Player : public GameObject
 {
@@ -14,10 +14,12 @@ public:
 	void Update() override;
 	void Draw() override;
 	void Release() override;
+	void OnCollision(GameObject* pTarget) override;
+
 private:
-	Fbx* pFbx_;
 	ChildOden* pRChildOden;
 	ChildOden* pLChildOden;
+	Bullet* bullet_;
 	int hModel_;
 };
 

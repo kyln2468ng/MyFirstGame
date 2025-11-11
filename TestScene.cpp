@@ -44,10 +44,5 @@ void TestScene::Draw()
 
 void TestScene::Release()
 {
-	if (pFbx_)
-	{
-		pFbx_->Release();
-		delete pFbx_;
-		pFbx_ = nullptr;
-	}
+	KillMe();
 }

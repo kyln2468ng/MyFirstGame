@@ -1,12 +1,19 @@
 #include "Player.h"
-#include "Engine/Fbx.h"
 #include "ChildOden.h"
 #include "Engine/Model.h"
 #include "Engine/Input.h"
 #include "Engine/SphereCollider.h"
+#include "Bullet.h"
+#include "Engine/SceneManager.h"
+
+namespace
+{
+	float coolTime_ = 1.0f;
+	const float deltatime_ = 0.016;
+}
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), pFbx_(nullptr),hModel_(-1)
+	:GameObject(parent, "Player"), hModel_(-1)
 {
 }
 
@@ -31,13 +38,13 @@ void Player::Initialize()
 	pRChildOden->SetPosition(2.0f, 1.0f, 0.0f);
 	pLChildOden->SetPosition(-2.0f, 1.0f, 0.0f);
 
-	SphereCollider* col = new SphereCollider(0.6f);
+	SphereCollider* col = new SphereCollider(0.5f);
 	AddCollider(col);
 }
 
 void Player::Update()
 {
-	transform_.rotate_.y += 1.0f;
+	//transform_.rotate_.y += 1.0f;
 	/*if (transform_.rotate_.y >= 720.0f)
 	{
 		KillMe();
@@ -46,6 +53,25 @@ void Player::Update()
 	{
 		transform_.position_.z += 0.1;
 	}
+	if (Input::IsKey(DIK_A))
+	{
+		transform_.position_.x -= 0.1f;
+	}
+	if (Input::IsKey(DIK_D))
+	{
+		transform_.position_.x += 0.1f;
+	}
+
+	coolTime_ -= deltatime_;
+	if (Input::IsKeyDown(DIK_SPACE) && coolTime_ < 0.0f)
+	{
+		bullet_ = (Bullet*)Instantiate<Bullet>(FindObject("PlayScene"));
+		bullet_->SetPosition(transform_.position_);
+		coolTime_ = 1.0f;
+	}
+
+	// 敵が複数体の場合も想定して、プレイヤー側は毎ループ呼ぶのは敵が0かどうかのブール？
+
 }
 
 void Player::Draw()
@@ -60,10 +86,16 @@ void Player::Draw()
 
 void Player::Release()
 {
-	if (pFbx_)
+	KillMe();
+}
+
+void Player::OnCollision(GameObject* pTarget)
+{
+	if (pTarget->FindObject("Enemy"))
 	{
-		pFbx_->Release();
-		delete pFbx_;
-		pFbx_ = nullptr;
+		this->Release();
+		SceneManager* sceneOb = (SceneManager*)FindObject("SceneManager");
+		sceneOb->ChangeScene(SCENE_ID_GAMEOVER);
 	}
 }
+

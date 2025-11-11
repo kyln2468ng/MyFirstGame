@@ -65,7 +65,6 @@ void GameObject::DrawSub()
 
 void GameObject::ReleaseSub()
 {
-	this->Release(); // Ž©•ª‚ÌŠJ•ú
 	for (auto child : childList_)
 	{
 		child->ReleaseSub();
@@ -86,6 +85,7 @@ void GameObject::KillMe()
 {
 	isDead_ = true;
 }
+
 
 GameObject* GameObject::GetRootJob()
 {
@@ -152,6 +152,8 @@ void GameObject::Collision(GameObject* pTarget)
 		a++;
 		// ‚È‚ñ‚©‚·‚é
 		//MessageBoxA(0, "‚Ô‚Â‚©‚Á‚½", "Collider", MB_OK);
+
+		this->OnCollision(pTarget);
 	}
 }
 

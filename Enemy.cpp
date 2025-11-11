@@ -27,7 +27,7 @@ void Enemy::Initialize()
 
 void Enemy::Update()
 {
-	
+	transform_.position_.z -= 0.2f;
 }
 
 void Enemy::Draw()
@@ -43,5 +43,13 @@ void Enemy::Release()
 		pFbx_->Release();
 		delete pFbx_;
 		pFbx_ = nullptr;
+	}
+}
+
+void Enemy::OnCollision(GameObject* pTarget)
+{
+	if (pTarget->FindObject("Bullet"))
+	{
+		KillMe();
 	}
 }

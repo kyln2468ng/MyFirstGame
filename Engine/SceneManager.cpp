@@ -1,6 +1,8 @@
 #include "SceneManager.h"
 #include "../PlayScene.h"
 #include "../TestScene.h"
+#include "../ClearScene.h"
+#include "../GameOverScene.h"
 #include "Direct3D.h"
 #include "Model.h"
 
@@ -36,6 +38,12 @@ void SceneManager::Update()
 			break;
 		case SCENE_ID_PLAY:
 			Instantiate<PlayScene>(this);
+			break;
+		case SCENE_ID_CLEAR:
+			Instantiate<ClearScene>(this);
+			break;
+		case SCENE_ID_GAMEOVER:
+			Instantiate<GameOverScene>(this);
 			break;
 		}
 		currentSceneID_ = nextSceneID_;
