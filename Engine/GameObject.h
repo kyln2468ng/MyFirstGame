@@ -27,11 +27,13 @@ public:
 	void SetPosition(XMFLOAT3 position);
 	void SetPosition(float x, float y, float z);
 
+	//bool isDie();
 	void KillMe();
 
 	GameObject* GetRootJob();
 	GameObject* FindChildObject(const string& name);
 	GameObject* FindObject(const string& name);
+	const std::string& GetObjectName() const;
 
 	void AddCollider(SphereCollider* pCollider);
 	void Collision(GameObject* pTarget);

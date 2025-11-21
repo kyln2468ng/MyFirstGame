@@ -5,10 +5,12 @@
 #include "Engine/SphereCollider.h"
 #include "Bullet.h"
 #include "Engine/SceneManager.h"
+#include "Engine/Camera.h"
 
 namespace
 {
-	float coolTime_ = 1.0f;
+	float coolTime_ = 0.0f;
+	const float nextTime = 0.5f;
 	const float deltatime_ = 0.016;
 }
 
@@ -67,11 +69,8 @@ void Player::Update()
 	{
 		bullet_ = (Bullet*)Instantiate<Bullet>(FindObject("PlayScene"));
 		bullet_->SetPosition(transform_.position_);
-		coolTime_ = 1.0f;
+		coolTime_ = nextTime;
 	}
-
-	// 敵が複数体の場合も想定して、プレイヤー側は毎ループ呼ぶのは敵が0かどうかのブール？
-
 }
 
 void Player::Draw()
@@ -91,7 +90,7 @@ void Player::Release()
 
 void Player::OnCollision(GameObject* pTarget)
 {
-	if (pTarget->FindObject("Enemy"))
+	if (pTarget->GetObjectName() == "Enemy")
 	{
 		this->Release();
 		SceneManager* sceneOb = (SceneManager*)FindObject("SceneManager");

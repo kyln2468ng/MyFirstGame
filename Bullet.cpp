@@ -13,7 +13,7 @@ Bullet::~Bullet()
 
 void Bullet::Initialize()
 {
-	hModel_ = Model::Load("rCubes.fbx");
+	hModel_ = Model::Load("Bullet.fbx");
 	assert(hModel_ >= 0);
 	transform_.scale_ = { 0.5f,0.5f,0.5f };
 	

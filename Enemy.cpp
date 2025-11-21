@@ -2,9 +2,10 @@
 #include "Engine/Model.h"
 #include "Engine/Fbx.h"
 #include "Engine/SphereCollider.h"
+#include "Engine/SceneManager.h"
 
 Enemy::Enemy(GameObject* parent)
-	:GameObject(parent,"Enemy"),pFbx_(nullptr),hModel_(-1)
+	:GameObject(parent,"Enemy"),pFbx_(nullptr),hModel_(-1),eDed_(false)
 {
 }
 
@@ -27,7 +28,7 @@ void Enemy::Initialize()
 
 void Enemy::Update()
 {
-	transform_.position_.z -= 0.2f;
+	//transform_.position_.z -= 0.2f;
 }
 
 void Enemy::Draw()
@@ -48,8 +49,10 @@ void Enemy::Release()
 
 void Enemy::OnCollision(GameObject* pTarget)
 {
-	if (pTarget->FindObject("Bullet"))
+	if (pTarget->GetObjectName() == "Bullet")
 	{
+		eDed_ = true;
 		KillMe();
 	}
+	
 }

@@ -14,7 +14,7 @@ ClearScene::~ClearScene()
 
 void ClearScene::Initialize()
 {
-	hModel_ = Model::Load("rCubes.fbx");
+	hModel_ = Model::Load("Clear.fbx");
 	assert(hModel_ >= 0);
 	transform_.scale_ = { 1.0f,1.0f,1.0f };
 }

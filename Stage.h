@@ -1,13 +1,15 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include <vector>
 
-class Fbx;
+class Enemy;
+class Player;
 
-class Enemy : public GameObject
+class Stage : public GameObject
 {
 public:
-	Enemy(GameObject* parent);
-	~Enemy();
+	Stage(GameObject* parent);
+	~Stage();
 
 	void Initialize() override;
 	void Update() override;
@@ -15,9 +17,6 @@ public:
 	void Release() override;
 	void OnCollision(GameObject* pTarget) override;
 
-	bool isDed() { return eDed_; }
 private:
-	Fbx* pFbx_;
-	int hModel_;
-	bool eDed_;
+	std::vector<Enemy*> enemy_;
 };

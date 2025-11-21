@@ -14,7 +14,7 @@ GameOverScene::~GameOverScene()
 
 void GameOverScene::Initialize()
 {
-	hModel_ = Model::Load("rCubes.fbx");
+	hModel_ = Model::Load("GameOver.fbx");
 	assert(hModel_ >= 0);
 	transform_.scale_ = { 0.1f,0.1f,0.1f };
 }

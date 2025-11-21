@@ -81,6 +81,11 @@ void GameObject::SetPosition(float x, float y, float z)
 	SetPosition(XMFLOAT3(x, y, z));
 }
 
+//bool GameObject::isDie()
+//{
+//	return isDead_;
+//}
+
 void GameObject::KillMe()
 {
 	isDead_ = true;
@@ -126,6 +131,11 @@ GameObject* GameObject::FindObject(const string& name)
 	return result;
 }
 
+const std::string& GameObject::GetObjectName(void) const
+{
+	return objectName_;
+}
+
 void GameObject::AddCollider(SphereCollider* pCollider)
 {
 	pCollider_ = pCollider;
@@ -148,8 +158,6 @@ void GameObject::Collision(GameObject* pTarget)
 	// コライダー同士が交差していたら
 	if (dist <= thre)
 	{
-		int a = 0;
-		a++;
 		// なんかする
 		//MessageBoxA(0, "ぶつかった", "Collider", MB_OK);
 
