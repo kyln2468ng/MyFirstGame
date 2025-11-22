@@ -16,7 +16,8 @@ void GameOverScene::Initialize()
 {
 	hModel_ = Model::Load("GameOver.fbx");
 	assert(hModel_ >= 0);
-	transform_.scale_ = { 0.1f,0.1f,0.1f };
+	transform_.scale_ = { 1.0f,1.0f,1.0f };
+	transform_.position_ = { 0.0f,-10.0f,50.0f };
 }
 
 void GameOverScene::Update()
