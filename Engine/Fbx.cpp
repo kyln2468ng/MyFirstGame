@@ -6,6 +6,126 @@
 
 namespace fs = std::filesystem;
 
+namespace Math
+{
+	//行列式を解く関数
+
+	float Det(XMFLOAT3 a, XMFLOAT3 b, XMFLOAT3 c);
+	float Det(XMFLOAT3 a, XMFLOAT3 b, XMFLOAT3 c)
+	{
+		float d1 = a.x * b.y * c.z;
+		float d2 = a.y * b.z * c.x;
+		float d3 = a.z * b.x * c.y;
+
+		return d1 + d2 + d3 - d1 - d2 - d3;
+	}
+
+	//Ray
+	bool Intersect(XMFLOAT3 origin, XMFLOAT3 ray, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2, float& data);
+	bool Intersect(XMFLOAT3 origin, XMFLOAT3 ray, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2, float& data)
+	{
+		// Ray の始点・方向、三角形の頂点を XMVECTOR に変換
+		// （DirectXMath で計算するため）
+		XMVECTOR vOrigin = XMLoadFloat3(&origin); // Ray の開始点 O
+		XMVECTOR vRay = XMLoadFloat3(&ray);    // Ray の方向ベクトル
+		XMVECTOR vV0 = XMLoadFloat3(&v0);     // 三角形の頂点 v0
+		XMVECTOR vV1 = XMLoadFloat3(&v1);     // 三角形の頂点 v1
+		XMVECTOR vV2 = XMLoadFloat3(&v2);     // 三角形の頂点 v2
+
+		//--------------------------------------
+		// 三角形の 2 本の辺ベクトルを作る
+		//--------------------------------------
+		// edge1 = v1 - v0  （三角形の一辺）
+		// edge2 = v2 - v0  （三角形のもう一辺）
+		XMVECTOR vEdge1 = vV1 - vV0;
+		XMVECTOR vEdge2 = vV2 - vV0;
+
+		// 行列式計算のため、XMFLOAT3 に戻す
+		XMFLOAT3 edge1;
+		XMFLOAT3 edge2;
+		XMStoreFloat3(&edge1, vEdge1);
+		XMStoreFloat3(&edge2, vEdge2);
+
+
+		//--------------------------------------
+		// d = origin - v0
+		//--------------------------------------
+		// 三角形の基準点 v0 から、Ray の開始点 origin へのベクトル
+		// 連立方程式
+		//   t*ray = (v0 - origin) + u*edge1 + v*edge2
+		// を作るための準備
+		XMFLOAT3 d;
+		XMStoreFloat3(&d, vOrigin - vV0);
+
+
+		//--------------------------------------
+		// ray を反転（-ray）
+		//--------------------------------------
+		// 連立方程式を
+		//   u*edge1 + v*edge2 + t*(-ray) = d
+		// の形にそろえるため、ray に -1 を掛ける
+		ray = {
+			ray.x * -1.0f,
+			ray.y * -1.0f,
+			ray.z * -1.0f
+		};
+
+
+		//--------------------------------------
+		// 連立方程式の分母（行列式）
+		//--------------------------------------
+		// denom = det(edge1, edge2, -ray)
+		// → 3 本のベクトルが作る行列の行列式
+		// → 0 なら、平面と Ray が平行で交点を持たない
+		float denom = Det(edge1,edge2,ray);
+
+
+		// 平行（解なし）の判定
+		if (denom <= 0.0f)
+		{
+			// Ray が三角形の平面と交差しない
+			return false;
+		}
+
+
+		//--------------------------------------
+		// クラメルの公式で u, v, t を求める
+		//--------------------------------------
+
+		// u = det(d, edge2, -ray) / denom
+		// → 交点が edge1 方向にどれだけ進んだか（重心座標 u）
+		float u = Det(d,edge2,ray) / denom;
+
+		// v = det(edge1, d, -ray) / denom
+		// → 交点が edge2 方向にどれだけ進んだか（重心座標 v）
+		float v = Det(edge1,d,ray) / denom;
+
+		// t = det(edge1, edge2, d) / denom
+		// → Ray の開始点から交点までの距離
+		float t = Det(edge1,edge2,d) / denom;
+
+
+		//--------------------------------------
+		// 三角形内部 ＋ Ray の向き 判定
+		//--------------------------------------
+		// t >= 0  : Ray の前方向に交点がある
+		// u >= 0  : v0 → v1 方向に外れていない
+		// v >= 0  : v0 → v2 方向に外れていない
+		// u + v <= 1 : 三角形の内部に入っている
+		if (t>=0 && u>= 0 && v >= 0&&u+v <= 1)
+		{
+			// Ray が三角形の内部にヒット
+			return true;
+		}
+
+		// 条件を満たさない → 当たっていない
+		return false;
+
+	}
+	
+	
+}
+
 Fbx::Fbx()
     :pVertexBuffer_(nullptr),
     pIndexBuffer_(nullptr),
@@ -131,8 +251,9 @@ void Fbx::Release()
 void Fbx::InitVertex(FbxMesh* mesh)
 {
 	//頂点情報を入れる配列
-	VERTEX* vertices = new VERTEX[vertexCount_];
-
+	//VERTEX* vertices = new VERTEX[vertexCount_];
+	pVertices_.resize(vertexCount_);
+	
 	//全ポリゴン
 	for (long poly = 0; poly < polygonCount_; poly++)
 	{
@@ -144,18 +265,20 @@ void Fbx::InitVertex(FbxMesh* mesh)
 
 			//頂点の位置
 			FbxVector4 pos = mesh->GetControlPointAt(index);
-			vertices[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
-		
+			//vertices[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
+			pVertices_[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
+
 			//頂点のUV
 			FbxLayerElementUV* pUV = mesh->GetLayer(0)->GetUVs();
 			int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
 			FbxVector2  uv = pUV->GetDirectArray().GetAt(uvIndex);
-			vertices[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
-		
+			//vertices[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
+			pVertices_[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 1.0f);
 			//頂点の法線
 			FbxVector4 normal;
 			mesh->GetPolygonVertexNormal(poly, vertex, normal);
-			vertices[index].normal = XMVectorSet((float)normal[0], (float)normal[1], (float)normal[2], 0.0f);
+			//vertices[index].normal = XMVectorSet((float)normal[0], (float)normal[1], (float)normal[2], 0.0f);
+			pVertices_[index].normal = XMVectorSet((float)normal[0], (float)normal[1], (float)normal[2], 0.0f);
 		}
 	}
 
@@ -168,7 +291,8 @@ void Fbx::InitVertex(FbxMesh* mesh)
 	bd_vertex.MiscFlags = 0;
 	bd_vertex.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA data_vertex;
-	data_vertex.pSysMem = vertices;
+	//data_vertex.pSysMem = vertices;
+	data_vertex.pSysMem = pVertices_.data();
 
 	HRESULT hr;
 	hr = Direct3D::pDevice->CreateBuffer(&bd_vertex, &data_vertex, &pVertexBuffer_);
@@ -182,13 +306,15 @@ void Fbx::InitIndex(FbxMesh* mesh)
 {
 	pIndexBuffer_ = new ID3D11Buffer * [materialCount_];
 
-	int* index = new int[polygonCount_ * 3];
+	//int* index = new int[polygonCount_ * 3];
+	ppIndex_.resize(materialCount_);
 	indexCount_ = std::vector<int>(materialCount_);
 
 	for (int i = 0; i < materialCount_; i++)
 	{
-		int count = 0;
-
+		//int count = 0;
+		auto& indeces = ppIndex_[i];
+		
 		//全ポリゴン
 		for (long poly = 0; poly < polygonCount_; poly++)
 		{
@@ -200,24 +326,28 @@ void Fbx::InitIndex(FbxMesh* mesh)
 				//3頂点分
 				for (long vertex = 0; vertex < 3; vertex++)
 				{
-					index[count] = mesh->GetPolygonVertex(poly, vertex);
-					count++;
+					//index[count] = mesh->GetPolygonVertex(poly, vertex);
+					indeces.push_back(mesh->GetPolygonVertex(poly, vertex));
+					//count++;
 				}
 			}
 		}
 
-		indexCount_[i] = count;
+		//indexCount_[i] = count;
+		indexCount_[i] = (int)indeces.size();
 
 		// インデックスバッファを生成する
 		D3D11_BUFFER_DESC   bd;
 		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(int) * polygonCount_ * 3;
+		//bd.ByteWidth = sizeof(int) * polygonCount_ * 3;
+		bd.ByteWidth = sizeof(int) * indexCount_[i];
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA InitData;
-		InitData.pSysMem = index;
+		//InitData.pSysMem = index;
+		InitData.pSysMem = indeces.data();
 		InitData.SysMemPitch = 0;
 		InitData.SysMemSlicePitch = 0;
 
@@ -296,4 +426,71 @@ void Fbx::InitMaterial(FbxNode* pNode)
 		}
 
 	}
+}
+
+void Fbx::RayCast(RayCastData& rayData)
+{
+	//XMVECTOR start = XMLoadFloat4(&rayData.start);
+	//XMVECTOR dir = XMLoadFloat4(&rayData.dir);
+	//XMVECTOR dirN = XMVector4Normalize(dir); // dirの単位ベクトル
+	XMFLOAT3 start = { rayData.start.x,rayData.start.y,rayData.start.z };
+	XMFLOAT3 dir = { rayData.dir.x,rayData.dir.y, rayData.dir.z };
+	XMVECTOR vDir = XMLoadFloat3(&dir);
+	XMVECTOR vDirN = XMVector3Normalize(vDir);
+	XMStoreFloat3(&dir, vDirN);
+
+	XMFLOAT3 F0, F1, F2;
+
+	for (int material = 0;material < materialCount_;material++)
+	{
+		auto& indices = ppIndex_[material];
+
+		//全ポリゴンに対して
+		for (int i = 0;i < (int)indices.size();i += 3)
+		{
+			VERTEX& V0 = pVertices_[ indices[i + 0] ];
+			VERTEX& V1 = pVertices_[ indices[i + 1] ];
+			VERTEX& V2 = pVertices_[ indices[i + 2] ];
+
+			XMStoreFloat3(&F0, V0.position);
+			XMStoreFloat3(&F1, V1.position);
+			XMStoreFloat3(&F2, V2.position);
+			rayData.isHit = Math::Intersect(start, dir, F0, F1, F2, rayData.dist);
+		}
+		if (rayData.isHit)
+		{
+			return;
+		}
+	}
+	rayData.isHit = false;
+
+
+	//rayData.isHit = InterSects();
+
+	//using namespace DirectX;
+
+	//XMVECTOR start = XMLoadFloat4(&rayData.start);
+	//XMVECTOR dir = XMVector3Normalize(XMLoadFloat4(&rayData.dir));
+
+	//for (int m = 0; m < materialCount_; ++m)
+	//{
+	//	const auto& indices = indicesPerMat_[m];
+
+	//	for (size_t i = 0; i + 2 < indices.size(); i += 3)
+	//	{
+	//		const VERTEX& v0 = vertices_[indices[i + 0]];
+	//		const VERTEX& v1 = vertices_[indices[i + 1]];
+	//		const VERTEX& v2 = vertices_[indices[i + 2]];
+
+	//		//if (TriangleTests::Intersects(
+	//		//	start, dir,
+	//		//	v0.position, v1.position, v2.position,
+	//		//	rayData.dist))
+	//		//{
+	//		//	rayData.hit = true;
+	//		//	return;
+	//		//}
+	//	}
+	//}
+	//rayData.hit = false;
 }

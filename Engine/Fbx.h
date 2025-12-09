@@ -12,7 +12,13 @@
 #pragma comment(lib, "LibXml2-MD.lib")
 #pragma comment(lib, "zlib-MD.lib")
 
-
+struct RayCastData
+{
+	XMFLOAT4 start;	//Rayの始点
+	XMFLOAT4 dir;	//Rayの方向（正規化してあること）
+	bool isHit;		//当たったかどうか
+	float dist;		//始点からの距離
+};
 
 class Fbx
 {
@@ -56,9 +62,15 @@ private:
 	ID3D11Buffer* pVertexBuffer_;
 	ID3D11Buffer** pIndexBuffer_;
 	ID3D11Buffer* pConstantBuffer_;
+
 	std::vector<MATERIAL> pMaterialList_;
 	std::vector<int> indexCount_; // マテリアルごとのインデックス数
 
+	std::vector<VERTEX>                 pVertices_;        // 頂点データ全部
+	std::vector<std::vector<int>>       ppIndex_;   // マテリアルごとのインデックスデータ[material][index]
 
+	//auto& arr = ppIndex_[1];
+	//arr[0]～arr[index - 1];
+	void RayCast(RayCastData& rayData);
 };
 
