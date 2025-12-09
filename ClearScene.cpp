@@ -17,10 +17,21 @@ void ClearScene::Initialize()
 	hModel_ = Model::Load("Clear.fbx");
 	assert(hModel_ >= 0);
 	transform_.scale_ = { 1.0f,1.0f,1.0f };
+	transform_.position_ = { 0.0f,5.0f,40.0f };
 }
 
 void ClearScene::Update()
 {
+	float tPosY = -15.0;
+
+	float nPos = tPosY - transform_.position_.y;
+	transform_.position_.y += nPos * 0.1f;
+
+	if (fabs(nPos) < 0.01f)
+	{
+		transform_.position_.y = tPosY;
+	}
+
 	if (Input::IsKeyDown(DIK_T))
 	{
 		SceneManager* sceneOb = (SceneManager*)FindObject("SceneManager");
