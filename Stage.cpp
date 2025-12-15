@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Engine/SceneManager.h"
+#include "Engine/Model.h"
 
 namespace
 {
@@ -38,6 +39,26 @@ void Stage::Initialize()
 
 void Stage::Update()
 {
+	//RayCastData data;
+	//XMStoreFloat4(&data.start, box.y);
+	//XMStoreFloat4(&data.dir, ray.y);
+
+
+	//Transform trans;
+	//trans.position_.x = 0;
+	//trans.position_.y = 0;
+	//trans.position_.z = 0;
+	//Model::SetTransform(model, trans);
+	//Model::RayCast(model, data);
+	//
+	////⑥ レイが当たったらブレークポイントで止める
+	//if (data.isHit)
+	//{
+	//	//なんか書いてないとifに当たらないから、
+	//	int a = 0;
+	//	a++;
+	//}
+
 	for (auto it = enemy_.begin(); it != enemy_.end(); )
 	{
 		Enemy* e = *it;

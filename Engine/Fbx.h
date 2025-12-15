@@ -33,6 +33,7 @@ public:
 	void InitConstantBuffer();
 	void InitMaterial(FbxNode* pNode);
 
+	void RayCast(RayCastData& rayData);
 private:
 	struct MATERIAL
 	{
@@ -71,6 +72,5 @@ private:
 
 	//auto& arr = ppIndex_[1];
 	//arr[0]Å`arr[index - 1];
-	void RayCast(RayCastData& rayData);
 };
 

@@ -1,5 +1,7 @@
 #include "Model.h"
 #include "Direct3D.h"
+#include "DirectXMath.h"
+#include "Fbx.h"
 
 namespace Model
 {
@@ -65,5 +67,31 @@ void Model::Release()
 
 void Model::RayCast(int hModel, RayCastData& data)
 {
+    //その時点での対象モデルのトランスフォームをカリキュレーション
+    modelList[hModel]->transform_.Calculation();
+
+    //①ワールド行列取得
+    XMMATRIX worldMatrix = modelList[hModel]->transform_.GetWorldMatrix();
     
+    //①ワールド行列の逆行列
+    XMMATRIX wInv = XMMatrixInverse(nullptr, worldMatrix);
+
+    //②レイの通過点を求める(ワールド空間でのレイの始点からdir方向に進む直線上の点を計算）
+    //方向ベクトルをちょい伸ばした先の点
+    XMVECTOR vDirVec = (XMLoadFloat4(&data.dir) - XMLoadFloat4(&data.start));
+
+    //③rayData.startをモデル空間に変換（①をかける）
+    XMVECTOR vstart = XMLoadFloat4(&data.start);
+    vstart = XMVector3TransformCoord(vstart, wInv);
+    XMStoreFloat4(&data.start, vstart);//変換結果をdata.startに格納
+
+    //④（始点から方向ベクトルをちょい伸ばした先）通過点（②）に①をかける(モデル空間に変換）
+    vDirVec = XMVector3TransformCoord(vDirVec, wInv);
+
+    //⑤rayData.dirを③から④に向かうベクトルにする（位置と位置引き算＝ベクトル）
+    XMVECTOR dirAtLocal = vDirVec - vstart;
+    XMStoreFloat4(&data.dir, vDirVec); //変換結果をrayData.dirに格納
+
+    //指定したモデル番号のFBXにレイキャスト！
+    modelList[hModel]->pfbx_->RayCast(data);
 }
