@@ -34,6 +34,8 @@ void Player::Initialize()
 	transform_.scale_.y = 0.7f;
 	transform_.scale_.z = 0.7f;
 
+	transform_.position_ = { 0.0f,8.0f,5.0f };
+
 	//子オブジェクトにChildOdenを追加する
 	pRChildOden = (ChildOden*)Instantiate<ChildOden>(this);
 	pLChildOden = (ChildOden*)Instantiate<ChildOden>(this);
@@ -47,6 +49,7 @@ void Player::Initialize()
 void Player::Update()
 {
 	//transform_.rotate_.y += 1.0f;
+	transform_.position_.y -= 0.1f;
 	/*if (transform_.rotate_.y >= 720.0f)
 	{
 		KillMe();
@@ -55,6 +58,10 @@ void Player::Update()
 	{
 		transform_.position_.z += 0.1;
 	}
+	if (Input::IsKey(DIK_S))
+	{
+		transform_.position_.z -= 0.1f;
+	}
 	if (Input::IsKey(DIK_A))
 	{
 		transform_.position_.x -= 0.1f;
@@ -62,6 +69,10 @@ void Player::Update()
 	if (Input::IsKey(DIK_D))
 	{
 		transform_.position_.x += 0.1f;
+	}
+	if (Input::IsKey(DIK_E))
+	{
+		transform_.position_.y += 1.0f;
 	}
 
 	coolTime_ -= deltatime_;

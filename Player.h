@@ -16,6 +16,8 @@ public:
 	void Release() override;
 	void OnCollision(GameObject* pTarget) override;
 
+	XMFLOAT3 GetPos() { return transform_.position_; }
+
 private:
 	ChildOden* pRChildOden;
 	ChildOden* pLChildOden;

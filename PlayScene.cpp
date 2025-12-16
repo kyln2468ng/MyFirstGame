@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "Engine/SceneManager.h"
 #include "Stage.h"
+#include "Engine/Input.h"
 
 PlayScene::PlayScene(GameObject* parent)
 	:GameObject(parent, "PlayScene")
@@ -26,6 +27,11 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
+	if (Input::IsKeyDown(DIK_T))
+	{
+		SceneManager* sceneOb = (SceneManager*)FindObject("SceneManager");
+		sceneOb->ChangeScene(SCENE_ID_TEST);
+	}
 }
 
 void PlayScene::Draw()
