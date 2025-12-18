@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include <filesystem>
 #include <string>
+#include <DirectXCollision.h>
 
 namespace fs = std::filesystem;
 
@@ -13,11 +14,15 @@ namespace Math
 	float Det(XMFLOAT3 a, XMFLOAT3 b, XMFLOAT3 c);
 	float Det(XMFLOAT3 a, XMFLOAT3 b, XMFLOAT3 c)
 	{
-		float d1 = a.x * b.y * c.z;
-		float d2 = a.y * b.z * c.x;
-		float d3 = a.z * b.x * c.y;
+		float diag =    (a.x * b.y * c.z) + //左上から右下
+						(a.y * b.z * c.x) + //左上から右下
+						(a.z * b.x * c.y);  //左上から右下
+		
+		float rdiag =   (a.z * b.y * c.x) + //右上から左下
+						(a.x * b.z * c.y) + //右上から左下
+						(a.y * b.x * c.z);  //右上から左下
 
-		return d1 + d2 + d3 - d1 - d2 - d3;
+		return diag - rdiag;
 	}
 
 	//Ray
@@ -123,7 +128,45 @@ namespace Math
 
 	}
 	
-	
+	bool Intersect(XMVECTOR origin, XMVECTOR dir, XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, float& data)
+	{
+		/*XMVECTOR vOrigin = XMLoadFloat4(&origin);
+		XMVECTOR oDir = XMLoadFloat4(&dir);*/
+
+		XMVECTOR vEdge1 = v1 - v0;
+		XMVECTOR vEdge2 = v2 - v0;
+
+		XMFLOAT3 edge1;
+		XMFLOAT3 edge2;
+		XMStoreFloat3(&edge1, vEdge1);
+		XMStoreFloat3(&edge2, vEdge2);
+
+		XMFLOAT3 d;
+		XMStoreFloat3(&d, origin - v0);
+
+		XMFLOAT3 fDir;
+		XMStoreFloat3(&fDir, dir);
+		/*fDir = {
+			fDir.x * -1.0f,
+			fDir.y * -1.0f,
+			fDir.z * -1.0f,
+		};*/
+
+		float denom = Det(edge1, edge2, fDir);
+
+		const float EPS = 1e-6f;
+		if (fabs(denom) < EPS) return false;
+
+		float u = Det(d, edge2, fDir) / denom;
+		float v = Det(edge1, d, fDir) / denom;
+		float t = Det(edge1, edge2, d) / denom;
+
+		if (t >= 0 && u >= 0 && v >= 0 && u + v <= 1)
+		{
+			return true;
+		}
+		return false;
+	}
 }
 
 Fbx::Fbx()
@@ -433,13 +476,14 @@ void Fbx::RayCast(RayCastData& rayData)
 	//XMVECTOR start = XMLoadFloat4(&rayData.start);
 	//XMVECTOR dir = XMLoadFloat4(&rayData.dir);
 	//XMVECTOR dirN = XMVector4Normalize(dir); // dirの単位ベクトル
-	XMFLOAT3 start = { rayData.start.x,rayData.start.y,rayData.start.z };
-	XMFLOAT3 dir = { rayData.dir.x,rayData.dir.y, rayData.dir.z };
-	XMVECTOR vDir = XMLoadFloat3(&dir);
-	XMVECTOR vDirN = XMVector3Normalize(vDir);
-	XMStoreFloat3(&dir, vDirN);
 
-	XMFLOAT3 F0, F1, F2;
+	//XMFLOAT3 start = { rayData.start.x,rayData.start.y,rayData.start.z };
+	//XMFLOAT3 dir = { rayData.dir.x,rayData.dir.y, rayData.dir.z };
+	//XMVECTOR vDir = XMLoadFloat3(&dir);
+	//XMVECTOR vDirN = XMVector3Normalize(vDir);
+	//XMStoreFloat3(&dir, vDirN);
+
+	//XMFLOAT3 F0, F1, F2;
 
 	for (int material = 0;material < materialCount_;material++)
 	{
@@ -452,14 +496,19 @@ void Fbx::RayCast(RayCastData& rayData)
 			VERTEX& V1 = pVertices_[ indices[i + 1] ];
 			VERTEX& V2 = pVertices_[ indices[i + 2] ];
 
-			XMStoreFloat3(&F0, V0.position);
-			XMStoreFloat3(&F1, V1.position);
-			XMStoreFloat3(&F2, V2.position);
-			rayData.isHit = Math::Intersect(start, dir, F0, F1, F2, rayData.dist);
-		}
-		if (rayData.isHit)
-		{
-			return;
+			rayData.isHit = Math::Intersect(
+				XMLoadFloat4(&rayData.start),
+				XMLoadFloat4(&rayData.dir),
+				V0.position,
+				V1.position,
+				V2.position,
+				rayData.dist
+			);
+
+			if (rayData.isHit)
+			{
+				return;
+			}
 		}
 	}
 	rayData.isHit = false;

@@ -5,6 +5,26 @@
 class Enemy;
 class Player;
 
+namespace
+{
+	const int XSIZE{ 15 };
+	const int ZSIZE{ 15 };
+	const int MODEL_NUM{ 5 };
+}
+
+
+enum BLOCK_TYPE
+{
+	DEFAULT, BRICK, GRASS, SAND, WATER
+};
+
+
+struct sData
+{
+	BLOCK_TYPE type;//ブロックのタイプ
+	int height;//ブロックを積む高さ
+};
+
 class Stage : public GameObject
 {
 public:
@@ -17,7 +37,12 @@ public:
 	void Release() override;
 	void OnCollision(GameObject* pTarget) override;
 
+	void SetBlock(BLOCK_TYPE type, int x, int z) { GetT(x, z).type = type; }
+	void SetBlockHeight(int x, int z, int height) { GetT(x, z).height = height; }
+	sData& GetT(int x, int z) { return sTable[z][x]; }
+	
 private:
 	std::vector<Enemy*> enemy_;
-	int hModel_;
+	int hModel_[MODEL_NUM];
+	sData sTable[ZSIZE][XSIZE];
 };

@@ -78,19 +78,23 @@ void Model::RayCast(int hModel, RayCastData& data)
 
     //‡AƒŒƒC‚Ì’Ê‰ß“_‚ğ‹‚ß‚é(ƒ[ƒ‹ƒh‹óŠÔ‚Å‚ÌƒŒƒC‚Ìn“_‚©‚çdir•ûŒü‚Éi‚Ş’¼üã‚Ì“_‚ğŒvZj
     //•ûŒüƒxƒNƒgƒ‹‚ğ‚¿‚å‚¢L‚Î‚µ‚½æ‚Ì“_
-    XMVECTOR vDirVec = (XMLoadFloat4(&data.dir) - XMLoadFloat4(&data.start));
+    //XMVECTOR vDirVec = (XMLoadFloat4(&data.dir) - XMLoadFloat4(&data.start));
+    XMVECTOR vDirVec{ data.start.x + data.dir.x,
+                      data.start.y + data.dir.y,
+                      data.start.z + data.dir.z, 0.0f };
 
     //‡BrayData.start‚ğƒ‚ƒfƒ‹‹óŠÔ‚É•ÏŠ·i‡@‚ğ‚©‚¯‚éj
     XMVECTOR vstart = XMLoadFloat4(&data.start);
-    vstart = XMVector3TransformCoord(vstart, wInv);
+    vstart = XMVector3Transform(vstart, wInv);//
     XMStoreFloat4(&data.start, vstart);//•ÏŠ·Œ‹‰Ê‚ğdata.start‚ÉŠi”[
 
     //‡Cin“_‚©‚ç•ûŒüƒxƒNƒgƒ‹‚ğ‚¿‚å‚¢L‚Î‚µ‚½æj’Ê‰ß“_i‡Aj‚É‡@‚ğ‚©‚¯‚é(ƒ‚ƒfƒ‹‹óŠÔ‚É•ÏŠ·j
-    vDirVec = XMVector3TransformCoord(vDirVec, wInv);
+    vDirVec = XMVector3Transform(vDirVec, wInv);//
 
     //‡DrayData.dir‚ğ‡B‚©‚ç‡C‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚É‚·‚éiˆÊ’u‚ÆˆÊ’uˆø‚«ZƒxƒNƒgƒ‹j
-    XMVECTOR dirAtLocal = vDirVec - vstart;
-    XMStoreFloat4(&data.dir, vDirVec); //•ÏŠ·Œ‹‰Ê‚ğrayData.dir‚ÉŠi”[
+    XMVECTOR dirAtLocal = XMVectorSubtract(vDirVec, vstart);
+    dirAtLocal = XMVector4Normalize(dirAtLocal); //³‹K‰»
+    XMStoreFloat4(&data.dir, dirAtLocal); //•ÏŠ·Œ‹‰Ê‚ğrayData.dir‚ÉŠi”[
 
     //w’è‚µ‚½ƒ‚ƒfƒ‹”Ô†‚ÌFBX‚ÉƒŒƒCƒLƒƒƒXƒgI
     modelList[hModel]->pfbx_->RayCast(data);
