@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "Engine/SceneManager.h"
 #include "Engine/Model.h"
+#include "resource.h"
 
 namespace
 {
@@ -164,4 +165,55 @@ void Stage::Release()
 void Stage::OnCollision(GameObject* pTarget)
 {
 	
+}
+
+BOOL Stage::localProck(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message) {
+	case WM_COMMAND: //コントロールの操作
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+			EndDialog(hWnd, IDOK);
+			return TRUE;
+		case IDCANCEL:
+			EndDialog(hWnd, IDCANCEL);
+			return TRUE;
+		}
+		break;
+	}
+	return FALSE;
+}
+
+BOOL Stage::manuProck(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message) {
+	case WM_INITDIALOG:
+		SendMessage(GetDlgItem(hWnd, IDC_COMBO1), BM_SETCHECK, BST_CHECKED, 0);
+		SendMessage(GetDlgItem(hWnd, IDC_COMBO1), CB_ADDSTRING, 0, (LPARAM)L"デフォルト");
+		SendMessage(GetDlgItem(hWnd, IDC_COMBO1), CB_ADDSTRING, 0, (LPARAM)L"レンガ");
+		SendMessage(GetDlgItem(hWnd, IDC_COMBO1), CB_ADDSTRING, 0, (LPARAM)L"草地");
+		SendMessage(GetDlgItem(hWnd, IDC_COMBO1), CB_ADDSTRING, 0, (LPARAM)L"砂地");
+		SendMessage(GetDlgItem(hWnd, IDC_COMBO1), CB_ADDSTRING, 0, (LPARAM)L"水場");
+		SendMessage(GetDlgItem(hWnd, IDC_COMBO1), CB_SETCURSEL, 0, 0);
+		return TRUE;
+	case WM_COMMAND:
+		switch (wParam)
+		{
+		case IDC_RADIO1:
+			mode_ = 0;
+			return TRUE;
+		case IDC_RADIO2:
+			mode_ = 1;
+			return TRUE;
+		case IDC_RADIO3:
+			mode_ = 2;
+			return TRUE;
+		case IDC_COMBO1:
+			select_ = (int)SendMessage(GetDlgItem(hWnd, IDC_COMBO1), CB_GETCURSEL, 0, 0);
+			return TRUE;
+		}
+		return FALSE;
+	}
+	return FALSE;
 }

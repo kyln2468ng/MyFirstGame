@@ -9,7 +9,8 @@
 #include "Engine/Input.h"
 #include "Engine/RootJob.h"
 #include "Engine/Model.h"
- 
+#include "Stage.h"
+
 #pragma comment(lib, "winmm.lib")
 
 HWND hWnd = nullptr; // ウィンドウハンドル…ウィンドウを識別するための番号　車のナンバーみたいなもん　IDとかそこらへん
@@ -33,6 +34,8 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK    DlgProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK    ManuProc(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプリケーション（プロセス）のインスタンスハンドル（識別子） 
                      _In_opt_ HINSTANCE hPrevInstance, // HINSTANCE：16ビットWindowsで使用された。特に意味はない
@@ -74,6 +77,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
 
     pRootJob = new RootJob(nullptr);
     pRootJob->Initialize();
+
+    HWND hDig = CreateDialog(hInst, MAKEINTRESOURCE(IDD_DIALOG2), hWnd, ManuProc, 0);
+    ShowWindow(hDig, SW_SHOW);
 
     // メイン メッセージ ループ:
     // メッセージループは、アプリケーションがシステムからメッセージを受け取り、処理するための仕組み。
@@ -137,22 +143,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance：実行中のアプ
 
             //背景の色
             //float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
-
-            if (Input::IsKeyDown(DIK_ESCAPE) || Input::IsMouseButtonDown(0))
-            {
-                static int cnt = 0;
-                cnt++;
-                if (cnt >= 3)
-                {
-                    PostQuitMessage(0);
-                }
-            }
-
+            
             //画面をクリア
             Direct3D::BeginDraw();
 
             //pRootJobから、全てのオブジェクトの描画をする
             pRootJob->DrawSub();
+
+            if (Input::IsKey(DIK_D))
+            {
+                HRESULT hr = DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, DlgProc);
+                if (hr == IDOK)
+                {
+                    PostQuitMessage(0);
+                }
+            }
 
             //スワップ（バックバッファを表に表示する）
             Direct3D::EndDraw();        
@@ -283,7 +288,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
+                break; 
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
@@ -337,4 +342,14 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+INT_PTR CALLBACK DlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    return ((Stage*)pRootJob->FindObject("Stage"))->localProck(hWnd, message, wParam, lParam);
+}
+
+INT_PTR CALLBACK ManuProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    return ((Stage*)pRootJob->FindObject("Stage"))->manuProck(hWnd, message, wParam, lParam);
 }
