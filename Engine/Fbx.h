@@ -25,8 +25,8 @@ class Fbx
 public:
 	Fbx();
 	HRESULT Load(std::string fileName);
-	void    Draw(Transform& transform);
-	void    Release();
+	void Draw(Transform& transform);
+	void Release();
 
 	void InitVertex(FbxMesh* mesh);
 	void InitIndex(FbxMesh* mesh);

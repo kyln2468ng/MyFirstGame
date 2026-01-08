@@ -3,6 +3,8 @@
 #include "Enemy.h"
 #include "Engine/SceneManager.h"
 #include "Engine/Model.h"
+#include "Engine/Camera.h"
+#include "Engine/Input.h"
 #include "resource.h"
 
 namespace
@@ -13,13 +15,13 @@ namespace
 Stage::Stage(GameObject* parent)
 	:GameObject(parent, "Stage"), hModel_(-1)
 {
-	for (int j = 0;j < ZSIZE;j++) {
+	/*for (int j = 0;j < ZSIZE;j++) {
 		for (int i = 0;i < XSIZE;i++)
 		{
 			SetBlock(BLOCK_TYPE::WATER, i, j);
 			SetBlockHeight(i, j, 1 + rand() % 14);
 		}
-	}
+	}*/
 }
 
 Stage::~Stage()
@@ -109,9 +111,45 @@ void Stage::Update()
 	//	SceneManager* sceneOb = (SceneManager*)FindObject("SceneManager");
 	//	sceneOb->ChangeScene(SCENE_ID_CLEAR);
 	//}
-
-
+	// 
 	
+	//視点移動をする
+	if (Input::IsKey(DIK_RIGHT))
+	{
+		transform_.rotate_.y += 0.1f;
+	}
+	if (Input::IsKey(DIK_LEFT))
+	{
+		transform_.rotate_.y -= 0.1f;
+	}
+
+	XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
+	XMMATRIX mRot = XMMatrixRotationRollPitchYaw(transform_.rotate_.x, transform_.rotate_.y, 0);
+	XMVECTOR vMove = { 0,0,0.1f };
+	vMove = XMVector3TransformCoord(vMove, mRot);
+
+	if (Input::IsKey(DIK_W))
+	{
+		vPos += vMove;
+		XMStoreFloat3(&transform_.position_, vPos);
+	}
+
+	//XMVECTOR camPos = XMLoadFloat3(&transform_.position_);
+	//XMFLOAT3 vTarget = transform_.position_;
+	//vTarget = vTarget + camPos;
+
+	//Camera::SetPosition(camPos);
+	//Camera::SetTarget(vTarget);
+
+	XMVECTOR vCam = { 0,5.0f,-10.0f,0 };
+	vCam = XMVector3TransformCoord(vCam, mRot);
+	XMFLOAT3 camPos;
+	XMStoreFloat3(&camPos, vPos + vCam);
+	Camera::SetPosition(camPos);
+
+	XMFLOAT3 camTarget = transform_.position_;
+	camTarget.y += 3.0f;
+	Camera::SetTarget(camTarget);
 
 }
 
@@ -123,7 +161,16 @@ void Stage::Draw()
 	for (int j = 0;j < ZSIZE;j++) {
 		for (int i = 0;i < XSIZE;i++)
 		{
-			for (int k = 0; k < (int)(GetT(i, j).height); k++) {
+			int type = BLOCK_TYPE::DEFAULT;
+			Transform t;
+			t.position_.x = i;
+			t.position_.z = j;
+			t.scale_ = { 1.0,1.0,1.0 };
+			Model::SetTransform(hModel_[type], t);
+			Model::Draw(hModel_[type]);
+
+			// 適当にブロックを積み上げてるコード
+			/*for (int k = 0; k < (int)(GetT(i, j).height); k++) {
 				int type = (int)(GetT(i, j).type);
 				Transform t;
 				t.position_.x = i - 15 / 2.0;
@@ -132,7 +179,7 @@ void Stage::Draw()
 				t.scale_ = { 0.95, 0.95, 0.95 };
 				Model::SetTransform(hModel_[type], t);
 				Model::Draw(hModel_[type]);
-			}
+			}*/ 
 		}
 	}
 
@@ -144,6 +191,7 @@ void Stage::Draw()
 	int type = BLOCK_TYPE::WATER;
 	Model::SetTransform(hModel_[type], t);
 	Model::Draw(hModel_[type]);
+
 	RayCastData rayData{
 		{ 5.0f, 0.0f, 5.0f,1.0f },
 		{ 0.0f,-1.0f, 0.0f,0.0f },
@@ -153,7 +201,7 @@ void Stage::Draw()
 	Model::RayCast(hModel_[type], rayData);
 	if (rayData.isHit)
 	{
-		MessageBoxA(NULL, "Hit", "Info", MB_OK);
+		//MessageBoxA(NULL, "Hit", "Info", MB_OK);
 	}
 }
 
