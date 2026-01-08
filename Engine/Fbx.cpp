@@ -119,6 +119,7 @@ namespace Math
 		// u + v <= 1 : ŽOŠpŒ`‚Ì“à•”‚É“ü‚Á‚Ä‚¢‚é
 		if (t>=0 && u>= 0 && v >= 0&&u+v <= 1)
 		{
+			
 			// Ray ‚ªŽOŠpŒ`‚Ì“à•”‚Éƒqƒbƒg
 			return true;
 		}

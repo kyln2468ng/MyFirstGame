@@ -65,6 +65,7 @@ void Stage::Initialize()
 		hModel_[i] = Model::Load(modelName[i]);
 		assert(hModel_[i] >= 0);
 	}
+	hModelColl_ = Model::Load("BoxDefault.fbx");
 }
 
 void Stage::Update()
@@ -148,9 +149,25 @@ void Stage::Update()
 	Camera::SetPosition(camPos);
 
 	XMFLOAT3 camTarget = transform_.position_;
-	camTarget.y += 3.0f;
 	Camera::SetTarget(camTarget);
 
+
+	XMVECTOR vDir = XMVectorSubtract(XMLoadFloat3(&camPos), XMLoadFloat3(&camTarget));
+	vDir = XMVector3Normalize(vDir);
+	XMStoreFloat3(&camTarget, vDir);
+
+	RayCastData data{
+		{ camPos.x,camPos.y,camPos.z,1 },
+		{camTarget.x,camPos.y,camPos.z,0},
+		false,
+		100
+	};
+	Model::RayCast(hModelColl_, data);
+	if (data.isHit)
+	{
+		int i = 0;
+		i++;
+	}
 }
 
 void Stage::Draw()
@@ -183,26 +200,26 @@ void Stage::Draw()
 		}
 	}
 
-	Transform t;
-	t.position_.x = 5;
-	t.position_.z = 5;
-	t.position_.y = 0;
-	t.scale_ = { 0.95, 0.95, 0.95 };
-	int type = BLOCK_TYPE::WATER;
-	Model::SetTransform(hModel_[type], t);
-	Model::Draw(hModel_[type]);
+	//Transform t;
+	//t.position_.x = 5;
+	//t.position_.z = 5;
+	//t.position_.y = 0;
+	//t.scale_ = { 0.95, 0.95, 0.95 };
+	//int type = BLOCK_TYPE::WATER;
+	//Model::SetTransform(hModel_[type], t);
+	//Model::Draw(hModel_[type]);
 
-	RayCastData rayData{
-		{ 5.0f, 0.0f, 5.0f,1.0f },
-		{ 0.0f,-1.0f, 0.0f,0.0f },
-		false,
-		100.0f
-	};
-	Model::RayCast(hModel_[type], rayData);
-	if (rayData.isHit)
-	{
-		//MessageBoxA(NULL, "Hit", "Info", MB_OK);
-	}
+	//RayCastData rayData{
+	//	{ 5.0f, 0.0f, 5.0f,1.0f },
+	//	{ 0.0f,-1.0f, 0.0f,0.0f },
+	//	false,
+	//	100.0f
+	//};
+	//Model::RayCast(hModel_[type], rayData);
+	//if (rayData.isHit)
+	//{
+	//	//MessageBoxA(NULL, "Hit", "Info", MB_OK);
+	//}
 }
 
 void Stage::Release()

@@ -47,6 +47,7 @@ public:
 private:
 	std::vector<Enemy*> enemy_;
 	int hModel_[MODEL_NUM];
+	int hModelColl_;
 	sData sTable[ZSIZE][XSIZE];
 	int mode_; // 0：上げる　1：下げる　2：種類変更
 	int select_; //ボックスの種類
