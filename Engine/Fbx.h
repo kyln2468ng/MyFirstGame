@@ -18,6 +18,9 @@ struct RayCastData
 	XMFLOAT4 dir;	//Rayの方向（正規化してあること）
 	bool isHit;		//当たったかどうか
 	float dist;		//始点からの距離
+
+	XMFLOAT3 hitPos;   //レイが当たった場所
+	XMFLOAT3 normal;   //当たった面の法線
 };
 
 class Fbx
@@ -69,6 +72,9 @@ private:
 
 	std::vector<VERTEX>                 pVertices_;        // 頂点データ全部
 	std::vector<std::vector<int>>       ppIndex_;   // マテリアルごとのインデックスデータ[material][index]
+
+	XMFLOAT3 hitPos_;
+	XMFLOAT3 nolmal_;
 
 	//auto& arr = ppIndex_[1];
 	//arr[0]～arr[index - 1];
